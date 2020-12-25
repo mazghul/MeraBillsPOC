@@ -11,6 +11,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Utils {
     private static final String paymentListFilename = "LastPayment.txt";
@@ -55,6 +57,9 @@ public class Utils {
                 } catch (Exception e) {
                     Log.e(activity.getLocalClassName(), "Error in closing stream while reading records" + e.getMessage());
                 }
+        }
+        if (paymentList.getPayments() == null) {
+            paymentList.setPayments(new ArrayList<>(Collections.emptyList()));
         }
         return paymentList;
     }
