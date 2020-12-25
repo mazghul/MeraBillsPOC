@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">MeraBills</string>
+    <string name="label_total_amount">Total Amount = \u20B9 </string>
+    <string name="rupee_symbol">\u20B9</string>
+    <string name="default_total_amount">0</string>
+    <string name="label_payments">Payments</string>
+    <string name="add_payment">Add Payment </string>
+    <string name="add_payment_underline"><u>Add Payment</u> </string>
+    <string name="amount_hint">Amount</string>
+    <string name="provider_hint">Provider (ICICI, Citibank, etc.)</string>
+    <string name="transaction_referenced">Transaction Reference</string>
+    <string name="cancel_button">cancel</string>
+    <string name="ok_button">ok</string>
+    <string name="no_payments">No payments found, Please add a payment</string>
+
+</resources>
