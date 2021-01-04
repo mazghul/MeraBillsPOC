@@ -14,6 +14,10 @@ import com.google.android.material.chip.ChipGroup;
 import com.mazghul.merabills.models.Payment;
 import com.mazghul.merabills.models.PaymentList;
 
+import com.microsoft.appcenter.AppCenter;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
+
 public class MainActivity extends AppCompatActivity implements PaymentDialogFragment.DialogListener {
 
     private ChipGroup chipGroup;
@@ -23,6 +27,8 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        AppCenter.start(getApplication(), "cb5f3ba5-12dc-44b6-b480-c914271d0180",
+                Analytics.class, Crashes.class);
         paymentList = Utils.readRecordsFromFile(this); // Read data from file.
         chipGroup = findViewById(R.id.chip_group_main);
         for (int i = 0; i < paymentList.getPayments().size(); i++) {
