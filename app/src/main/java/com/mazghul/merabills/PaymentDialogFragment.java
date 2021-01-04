@@ -2,6 +2,7 @@ package com.mazghul.merabills;
 
 import android.graphics.Point;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -67,6 +68,7 @@ public class PaymentDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         amountEditText = view.findViewById(R.id.amount_editText);
+        amountEditText.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(7, 2)});
         provider_editText = view.findViewById(R.id.provider_editText);
         transaction_reference = view.findViewById(R.id.transaction_reference);
         Button btnDone = view.findViewById(R.id.btnDone);
@@ -75,7 +77,6 @@ public class PaymentDialogFragment extends DialogFragment {
         btnDone.setOnClickListener(view1 -> saveData());
         btnCancel.setOnClickListener(view1 -> dismiss());
     }
-
 
 
     private void loadSpinner(View view) {
@@ -100,7 +101,7 @@ public class PaymentDialogFragment extends DialogFragment {
         payment_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if(Arrays.asList(BANK_TRANSFER, CREDIT_CARD).contains(payment_type.getSelectedItem().toString())) {
+                if (Arrays.asList(BANK_TRANSFER, CREDIT_CARD).contains(payment_type.getSelectedItem().toString())) {
                     additional_payment_details.setVisibility(View.VISIBLE);
                 } else {
                     additional_payment_details.setVisibility(View.GONE);
@@ -115,8 +116,8 @@ public class PaymentDialogFragment extends DialogFragment {
     }
 
     private void saveData() {
-        if(amountEditText.getText().toString().equals("")) {
-            Toast.makeText(getActivity(), "Please enter an Amount", Toast.LENGTH_SHORT).show();
+        boolean validationPassed = validateData();
+        if (!validationPassed) {
             return;
         }
         DialogListener dialogListener = (DialogListener) getActivity();
@@ -128,10 +129,6 @@ public class PaymentDialogFragment extends DialogFragment {
             Toast.makeText(getActivity(), "Please enter an Amount", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(payment_type.getSelectedItem() == null) {
-            Toast.makeText(getActivity(), "You are not allowed to perform this action", Toast.LENGTH_SHORT).show();
-            return;
-        }
         payment.setPaymentType(payment_type.getSelectedItem().toString());
         payment.setTransactionId(transaction_reference.getText().toString());
         payment.setProvider(provider_editText.getText().toString());
@@ -140,7 +137,28 @@ public class PaymentDialogFragment extends DialogFragment {
         dismiss();
     }
 
-        public interface DialogListener {
+    private boolean validateData() {
+        if (amountEditText.getText().toString().equals("")) {
+            Toast.makeText(getActivity(), "Please enter an Amount", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (payment_type.getSelectedItem() == null) {
+            Toast.makeText(getActivity(), "You are not allowed to perform this action", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (payment_type.getSelectedItem() == BANK_TRANSFER || payment_type.getSelectedItem() == CREDIT_CARD) {
+            if (provider_editText.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Please enter provider", Toast.LENGTH_SHORT).show();
+                return false;
+            } else if (transaction_reference.getText().toString().equals("")) {
+                Toast.makeText(getActivity(), "Please enter transaction reference", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public interface DialogListener {
         void onFinishEditDialog(Payment payment);
     }
 
